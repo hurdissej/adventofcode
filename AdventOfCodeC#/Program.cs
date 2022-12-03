@@ -1,3 +1,3 @@
 ﻿// See https://aka.ms/new-console-template for more information
-var input = File.ReadAllLines("Input/Day1.txt");
-Console.WriteLine(Day1.Day1.Execute(input));
+var input = File.ReadAllLines("Input/Day2.txt");
+Console.WriteLine(Day2.Day2.Execute(input));
