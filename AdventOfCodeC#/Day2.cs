@@ -6,56 +6,83 @@ public static class Day2
     {
         return input
             .Select(game => game.Split(' ').Take(2))
-            .Select(twoSide => (Parse(twoSide.First()), Parse(twoSide.Last())))
+            .Select(twoSide => (ParseLhs(twoSide.First()), ParseRhs(twoSide.Last())))
             .Select(GetScore)
             .Sum();
     }
 
-    private static int GetScore((RPS lhs, RPS rhs) input)
+    private static int GetScore((RPS lhs, WLD rhs) input)
     {
-        switch (input.rhs)
+        switch (input.lhs)
         {
             case RPS.Scissors:
             {
-                int score = 3;
-                if (input.lhs == RPS.Scissors) score += 3;
-                if (input.lhs == RPS.Paper) score += 6;
-                return score;
+                if (input.rhs == WLD.Win) return Scores[WLD.Win.ToString()] + Scores[RPS.Rock.ToString()];
+                if (input.rhs == WLD.Draw) return Scores[WLD.Draw.ToString()] + Scores[RPS.Scissors.ToString()];
+                if (input.rhs == WLD.Lose) return Scores[WLD.Lose.ToString()] + Scores[RPS.Paper.ToString()];
+                return 0;
             }
             case RPS.Paper:
             {
-                int score = 2;
-                if (input.lhs == RPS.Paper) score += 3;
-                if (input.lhs == RPS.Rock) score += 6;
-                return score;
+                if (input.rhs == WLD.Win) return Scores[WLD.Win.ToString()] + Scores[RPS.Scissors.ToString()];
+                if (input.rhs == WLD.Draw) return Scores[WLD.Draw.ToString()] + Scores[RPS.Paper.ToString()];
+                if (input.rhs == WLD.Lose) return Scores[WLD.Lose.ToString()] + Scores[RPS.Rock.ToString()];
+                return 0;
             }
             case RPS.Rock:
             {
-                int score = 1;
-                if (input.lhs == RPS.Rock) score += 3;
-                if (input.lhs == RPS.Scissors) score += 6;
-                return score;
+                if (input.rhs == WLD.Win) return Scores[WLD.Win.ToString()] + Scores[RPS.Paper.ToString()];
+                if (input.rhs == WLD.Draw) return Scores[WLD.Draw.ToString()] + Scores[RPS.Rock.ToString()];
+                if (input.rhs == WLD.Lose) return Scores[WLD.Lose.ToString()] + Scores[RPS.Scissors.ToString()];
+                return 0;
             }
             default:
                 throw new ArgumentException();
         }
     }
 
-    private static RPS Parse(string input)
+    private static RPS ParseLhs(string input)
     {
         switch (input)
         {
-            case "A": case "X": return RPS.Rock;
-            case "B": case "Y": return RPS.Paper;
-            case "C": case "Z": return RPS.Scissors;
+            case "A": return RPS.Rock;
+            case "B": return RPS.Paper;
+            case "C": return RPS.Scissors;
             default: throw new ArgumentException("Not a valid input");
         }   
     }
+    
+    private static WLD ParseRhs(string input)
+    {
+        switch (input)
+        {
+            case "X": return WLD.Lose;
+            case "Y": return WLD.Draw;
+            case "Z": return WLD.Win;
+            default: throw new ArgumentException("Not a valid input");
+        }   
+    }
+
+    private static Dictionary<string, int> Scores = new Dictionary<string, int>()
+    {
+        { "Rock", 1 },
+        { "Paper", 2 },
+        { "Scissors", 3 },
+        { "Win", 6 },
+        { "Draw", 3 },
+        { "Lose", 0 },
+    };
 
     private enum RPS
     {
         Rock,
         Paper,
         Scissors
+    }
+    private enum WLD
+    {
+        Win,
+        Lose,
+        Draw
     }
 }
